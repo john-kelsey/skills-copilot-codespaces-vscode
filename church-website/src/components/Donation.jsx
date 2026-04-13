@@ -30,6 +30,7 @@ export default function Donation() {
           <div className="grid sm:grid-cols-2 gap-4 mb-6 text-left">
             <div className="bg-blue-700 rounded-xl p-4">
               <p className="text-blue-300 text-xs uppercase tracking-widest mb-1">Paybill Number</p>
+              {/* TODO: Replace with the actual M-Pesa Paybill number before going live */}
               <p className="text-2xl font-bold">000000</p>
               <p className="text-blue-300 text-xs mt-1">(placeholder)</p>
             </div>

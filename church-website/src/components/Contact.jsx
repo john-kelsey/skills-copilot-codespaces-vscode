@@ -34,6 +34,7 @@ export default function Contact() {
               </svg>
             </div>
             <h3 className="font-bold text-blue-900 mb-2">Phone</h3>
+            {/* TODO: Replace with the actual church phone number before going live */}
             <p className="text-sm text-gray-600">+254 700 000 000</p>
             <p className="text-xs text-gray-400 mt-1">(placeholder)</p>
           </div>
@@ -46,6 +47,7 @@ export default function Contact() {
               </svg>
             </div>
             <h3 className="font-bold text-blue-900 mb-2">Email</h3>
+            {/* TODO: Replace with the actual church email address before going live */}
             <p className="text-sm text-gray-600">info@dckroad.org</p>
             <p className="text-xs text-gray-400 mt-1">(placeholder)</p>
           </div>

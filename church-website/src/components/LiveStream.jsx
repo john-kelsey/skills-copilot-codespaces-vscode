@@ -11,12 +11,12 @@ export default function LiveStream() {
           service.
         </p>
 
-        {/* YouTube embed */}
+        {/* YouTube embed – shows latest live stream or most recent upload */}
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-blue-100">
           <iframe
             className="absolute inset-0 w-full h-full"
-            src="https://www.youtube.com/embed?listType=user_uploads&list=deliverancechurchintlkenya3168"
-            title="Deliverance Church Kenyatta Road – YouTube"
+            src="https://www.youtube.com/embed/live_stream?channel=UCdeliverancechurchintlkenya3168"
+            title="Deliverance Church Kenyatta Road – YouTube Live"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           />
