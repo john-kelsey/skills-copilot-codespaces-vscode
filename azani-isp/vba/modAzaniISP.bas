@@ -21,8 +21,8 @@ Option Explicit
 Public Const REGISTRATION_FEE   As Currency = 8500
 Public Const INSTALLATION_FEE   As Currency = 10000
 Public Const PC_UNIT_COST        As Currency = 40000
-Public Const UPGRADE_DISCOUNT    As Double   = 0.1    ' 10 %
-Public Const OVERDUE_FINE_RATE   As Double   = 0.15   ' 15 %
+Public Const UPGRADE_DISCOUNT    As Double   = 0.1    ' 10%
+Public Const OVERDUE_FINE_RATE   As Double   = 0.15   ' 15%
 Public Const RECONNECTION_FEE    As Currency = 1000
 Public Const DISCONNECTION_DAY   As Integer  = 10     ' 10th of the following month
 
@@ -234,7 +234,8 @@ Public Function GenerateMonthlyBill(ByVal institutionID As Long, _
 
     ' --- Calculate dates ---
     billDate = Date
-    ' Due date = last day of the billing month
+    ' DateSerial with day=0 returns the last day of the previous month,
+    ' so (billingMonth + 1, 0) gives the last day of billingMonth.
     dueDate = DateSerial(billingYear, billingMonth + 1, 0)
 
     ' --- Insert the bill ---
@@ -249,17 +250,17 @@ Public Function GenerateMonthlyBill(ByVal institutionID As Long, _
              subscriptionID & ", " & _
              billingMonth & ", " & _
              billingYear & ", " & _
-             "#" & Format(billDate, "yyyy\/mm\/dd") & "#, " & _
-             "#" & Format(dueDate, "yyyy\/mm\/dd") & "#, " & _
+             "#" & Format(billDate, "yyyy-mm-dd") & "#, " & _
+             "#" & Format(dueDate, "yyyy-mm-dd") & "#, " & _
              effectiveRate & ", " & _
              OVERDUE_FINE_RATE & ", " & _
              "0, 0, " & effectiveRate & ", 0, 'Unpaid');"
 
     db.Execute insSQL, dbFailOnError
 
-    ' Return the new BillID
-    GenerateMonthlyBill = db.OpenRecordset( _
-        "SELECT @@IDENTITY;")(0)
+    ' Return the new BillID using the Max approach (Access-safe)
+    GenerateMonthlyBill = CurrentDb.OpenRecordset( _
+        "SELECT Max(BillID) FROM tblMonthlyBills;")(0)
 
     Set db = Nothing
     MsgBox "Bill generated for InstitutionID " & institutionID & _
@@ -272,7 +273,7 @@ End Function
 ' ============================================================
 ' SECTION 6 – MARK BILL AS OVERDUE
 '
-' Applies the 15 % fine and updates BillStatus to 'Overdue'.
+' Applies the 15% fine and updates BillStatus to 'Overdue'.
 ' Call this after the 10th of the month following the DueDate.
 ' ============================================================
 Public Sub MarkBillOverdue(ByVal billID As Long)
@@ -368,7 +369,7 @@ Public Sub DisconnectInstitution(ByVal billID As Long)
               "ReconnectionFee=" & RECONNECTION_FEE & ", " & _
               "TotalAmountDue=" & newTotal & ", " & _
               "BillStatus='Disconnected', " & _
-              "DisconnectionDate=#" & Format(Date, "yyyy\/mm\/dd") & "# " & _
+              "DisconnectionDate=#" & Format(Date, "yyyy-mm-dd") & "# " & _
               "WHERE BillID=" & billID & ";"
     db.Execute updBill, dbFailOnError
 
@@ -435,7 +436,7 @@ Public Sub ReconnectInstitution(ByVal billID As Long)
     Dim updBill As String
     updBill = "UPDATE tblMonthlyBills SET " & _
               "BillStatus='Reconnected', " & _
-              "ReconnectionDate=#" & Format(Date, "yyyy\/mm\/dd") & "# " & _
+              "ReconnectionDate=#" & Format(Date, "yyyy-mm-dd") & "# " & _
               "WHERE BillID=" & billID & ";"
     db.Execute updBill, dbFailOnError
 
@@ -496,7 +497,7 @@ Public Sub RecordPayment(ByVal institutionID As Long, _
              "VALUES (" & _
              institutionID & ", " & _
              billIDSQL & ", " & _
-             "#" & Format(Date, "yyyy\/mm\/dd") & "#, '" & _
+             "#" & Format(Date, "yyyy-mm-dd") & "#, '" & _
              paymentType & "', " & _
              amountPaid & ", '" & _
              paymentMethod & "', '" & _
@@ -530,7 +531,7 @@ Public Sub RecordPayment(ByVal institutionID As Long, _
             Dim updBill As String
             updBill = "UPDATE tblMonthlyBills SET " & _
                       "PaidAmount=" & newPaid & ", " & _
-                      "PaymentDate=#" & Format(Date, "yyyy\/mm\/dd") & "#, " & _
+                      "PaymentDate=#" & Format(Date, "yyyy-mm-dd") & "#, " & _
                       "BillStatus='" & newStatus & "' " & _
                       "WHERE BillID=" & billIDSQL & ";"
             db.Execute updBill, dbFailOnError
@@ -611,7 +612,7 @@ Public Sub ProcessOverdueBills()
 
     sql = "SELECT BillID FROM tblMonthlyBills " & _
           "WHERE BillStatus='Unpaid' AND DueDate < #" & _
-          Format(cutoff, "yyyy\/mm\/dd") & "#;"
+          Format(cutoff, "yyyy-mm-dd") & "#;"
 
     Set rs = db.OpenRecordset(sql, dbOpenSnapshot)
     count = 0
