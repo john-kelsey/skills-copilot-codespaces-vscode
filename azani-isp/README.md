@@ -13,6 +13,8 @@ A complete Microsoft Access database project for the **Azani Internet Service Pr
 | `sql/04_queries.sql` | All SELECT queries for Tasks 3–5 |
 | `docs/setup_guide.md` | Step-by-step Access import guide |
 | `docs/data_dictionary.md` | Full field reference for all 7 tables |
+| `vba/modAzaniISP.bas` | VBA module – business logic, billing, payments |
+| `vba/FORMS_VBA.md` | Ready-to-paste VBA event code for all 6 forms |
 
 ## Quick Start
 
@@ -21,6 +23,13 @@ A complete Microsoft Access database project for the **Azani Internet Service Pr
 3. Switch to **SQL View** via Home → View → SQL View.
 4. Run each `.sql` file **in order** (01 → 02 → 03 → 04), pasting one block at a time and clicking **Run (!)**.
 5. After all tables exist, open **Database Tools → Relationships** and add the foreign-key links described in `docs/data_dictionary.md`.
+
+## VBA Quick Start
+
+6. Press **Alt + F11** to open the VBA Editor.
+7. Choose **File → Import File…**, browse to `vba/modAzaniISP.bas`, click **Open**.
+8. The module `modAzaniISP` appears in the Project pane – all business-logic functions are now available database-wide.
+9. When building forms, paste the event procedures from `vba/FORMS_VBA.md` into the corresponding form modules (open the form in Design View → select a control → Property Sheet → Event tab → `[…]` → Code Builder).
 
 ## Business Rules
 
